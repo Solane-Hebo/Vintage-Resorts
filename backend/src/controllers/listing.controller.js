@@ -1,0 +1,72 @@
+import mongoose from 'mongoose'
+import Listing from '../models/listing.model.js'
+import asyncHandler from 'express-async-handler'
+export const createNewListing = asyncHandler (async(req, res, next) => {
+    const { title, description, price, pricingNote, location, images } = req.body
+
+    if (!title || !description || !price || !pricingNote || !location || !images) {
+        return res.status(400).json({ message: 'Please provide all required fields'})
+    }
+    const newListing = await Listing.create({ title, description, price, pricingNote, location, images })
+    
+    res.status(201).json(newListing)
+})
+
+export const getAllListings = asyncHandler (async(req, res) => {
+    const listings = await Listing.find().exec()
+    res.status(200).json(listings)
+})
+export const getListing = asyncHandler (async(req, res) => {
+    const {id} = req.params
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({message: 'Invalid listing id'})
+    }
+
+    const listing = await Listing.findById(id).exec()
+
+    if(!listing){
+    return res.status(404).json({message: `Can't find listing`})
+    }
+    res.status(200).json(listing)
+})
+
+export const updateListing = asyncHandler (async(req, res) => {
+    const {id} = req.params 
+    const { title, description, price, pricingNote, location, images } = req.body
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({message: 'Invalid listing id'})
+    }
+
+    const toUpdate = {}
+    if(title) toUpdate.title = title
+    if(description) toUpdate.description = description
+    if(price) toUpdate.price = price
+    if(pricingNote) toUpdate.pricingNote = pricingNote
+    if(location) toUpdate.location = location
+    if(images) toUpdate.images = images
+
+    if(Object.keys(toUpdate).length === 0){
+        return res.status(400).json({message: 'Please provide at least one field to update'})
+    }
+
+    const updatedListing = await Listing.findByIdAndUpdate(id, toUpdate, {new: true}).exec()
+    if(!updatedListing){
+        return res.status(404).json({message: `Can't find listing`})
+}
+
+    res.status(200).json(updatedListing)
+})
+
+export const deleteListing = asyncHandler (async(req, res) => {
+    const {id} = req.params
+     if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({message: 'Invalid listing id'})
+    }
+
+    const deletedListing = await Listing.findByIdAndDelete(id).exec()
+
+     if(!deletedListing){
+        return res.status(404).json({message: `Can't find listing`})
+}
+    res.status(200).json({message: 'Listing deleted successfully'})
+})
