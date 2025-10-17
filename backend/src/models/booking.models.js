@@ -9,8 +9,8 @@ const bookingSchema = new mongoose.Schema(
             index: true
         }, 
         // Todo add User
-        guestName: { type: string},
-        guestEmail: { type: string},
+        guestName: { type: String},
+        guestEmail: { type: String},
 
         guests: { 
             adults: {type: Number, default: 1, min: 1},
