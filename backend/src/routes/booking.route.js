@@ -1,5 +1,7 @@
 import express from 'express'
-import { cancelBooking, checkAvailability, createBooking, getBookingById, getBookings } from '../controllers/booking.controller.js'
+import { createBooking, deleteBooking, getBookingById, getBookings} from '../controllers/booking.controller.js'
+import ROLES from '../constant/role.js'
+
 const router = express.Router()
 
 
@@ -7,10 +9,13 @@ router.route('/')
  .get(getBookings)
  .post(createBooking)
 
-router.get('/availability', checkAvailability)
-router.get('/:id', getBookingById)
-router.patch('/:id/cancel', cancelBooking)
 
+router.route('/:id')
+.get(getBookingById)
+.delete(deleteBooking)
+
+
+// router.delete('/:id/booking', cancelBooking)
 
 
 

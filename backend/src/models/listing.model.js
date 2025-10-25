@@ -8,7 +8,13 @@ const listingSchema = new mongoose.Schema({
     location: {type: String, required: true},
     images: [{ url: { type: String },
     caption: String
-}]
+}],
+    author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
+}
 },
 {timestamps: true})
 

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import asyncHandler from "express-async-handler";
 import Booking from "../models/booking.models.js";
 import Listing from "../models/listing.model.js";
+import ROLES from "../constant/role.js";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24
 
@@ -24,6 +25,8 @@ export const createBooking = asyncHandler(async (req, res) => {
         guestName,
         guestEmail
     } = req.body
+
+    const user = req.user._id
 
     if (!listingId || !checkIn || !checkOut){
         return res.status(400).json({ message: 'listingId, checkIn, checkOut are required'})
@@ -68,7 +71,8 @@ export const createBooking = asyncHandler(async (req, res) => {
         guestName,
         guestEmail,
         totalPrice,
-        status: 'confirmed'
+        status: 'confirmed',
+        user
     })
 
     const populatedBooking = await booking.populate('listing')
@@ -79,7 +83,10 @@ export const createBooking = asyncHandler(async (req, res) => {
 //Get All
 export const getBookings = asyncHandler (async (req, res, next) => {
     const { listingId, from, to} = req.query
+
+    const isAdmin = req.user.role === ROLES.ADMIN
     const q = {}
+
     if(listingId) q.listing = listingId
 
     if(from || to) {
@@ -94,6 +101,10 @@ export const getBookings = asyncHandler (async (req, res, next) => {
             const t = new Date(to)
             q.checkIn.$lt = t
         }
+    }
+
+    if(!isAdmin) {
+        q.user = req.user._id
     }
 
     const bookings = await Booking.find(q).sort({ checkIn: 1}).populate('listing')
@@ -111,6 +122,13 @@ export const getBookingById =asyncHandler(async (req, res) => {
     if(!booking) {
         return res.status(404).json({message: "Booking not found"})
     }
+
+    const isAdmin = req.user.role === ROLES.ADMIN
+    const isOwner = booking.user.toString() === req.user._id.toString()
+
+    if(!isAdmin && !isOwner) {
+        return res.status(403).json({ message: "Access denied. Not your booking"})
+    }
     res.status(200).json(booking)
  })
  
@@ -127,25 +145,61 @@ export const checkAvailability = asyncHandler(async (req, res) => {
     res.status(200).json({ isAvailable})
 })
 
+export const updateBookingStatus = asyncHandler(async (req, res) => {
+    const { id } = req.params
 
-// PATCH
-export const cancelBooking = asyncHandler(async (req, res) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid booking id" });
+    }
+
+    const current = await Booking.findById(id)
+    if(!current) {
+        return res.status(400).json({ message: "Can't find booking" });
+    }
+
+    const isAdmin = req.user.role === ROLES.ADMIN
+    const isOwner = current.user?.toString() === req.user._id?.toString();
+
+    if(!isAdmin && !isOwner) {
+        return res.status(403).json({ message: "Access denied. Not your booking"});
+    }
+
+    const updatedBooking = await Booking.findOneAndUpdate(
+        filter,
+        { new: true }
+    ).populate('listing');
+
+    if (!updatedBooking) {
+        return res.status(404).json({ message: "Can't find booking" });
+    }
+
+    res.status(200).json(updatedBooking);
+})
+
+// PATCH  todo : tar bort sin egen bokning eller admin
+export const deleteBooking = asyncHandler(async (req, res) => {
     const { id } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid booking id" });
       }
 
-    const booking = await Booking.findByIdAndUpdate(
-        id, 
-        {status: "cancelled"}, 
-        { new: true})
-        .populate('listing')
-        
 
-    if(!booking) { return res.status(404)
-            .json({message: "Can't find booking"})
+    const booking = await Booking.findById(id)    
+    if(!booking) { 
+        return res.status(404).json({message: "Can't find booking"})
     }
 
-    return res.status(200).json({ message:"Booking cancelled", booking})
+    const isAdmin = req.user.role === ROLES.ADMIN
+    const isOwner = booking.user.toString() === req.user._id.toString()
+
+    if(!isAdmin && !isOwner) {
+        return res.status(403).json({ message: "Access denied. Not your booking"})
+    }
+
+    
+    console.log('DELETE /api/bookings/:id', req.params.id);
+    await booking.deleteOne()
+    return res.status(200).json({ message:"Booking deleted successfully"})
+
 })

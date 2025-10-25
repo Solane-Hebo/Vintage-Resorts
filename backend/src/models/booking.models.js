@@ -8,7 +8,12 @@ const bookingSchema = new mongoose.Schema(
             required: true,
             index: true
         }, 
-        // Todo add User
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+            index: true
+        },
         guestName: { type: String},
         guestEmail: { type: String},
 
@@ -24,7 +29,7 @@ const bookingSchema = new mongoose.Schema(
 
         status: {
             type: String,
-            enum: ['pending', 'confirmed', 'cancelled'],
+            enum: ['pending', 'confirmed', 'cancelled', 'completed'],
             default: 'confirmed'
         },
 
