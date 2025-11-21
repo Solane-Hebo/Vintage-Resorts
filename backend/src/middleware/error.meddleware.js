@@ -3,7 +3,7 @@ export const notFound = (req, res, next) => {
     res.status(404)
     next(error)
 }
-export const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err, res,) => {
     console.log(`Error: ${err.message}`)
 
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode

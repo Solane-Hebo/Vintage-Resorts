@@ -29,7 +29,10 @@ export const register = asyncHandler(async (req, res) => {
 
     const token = generateToken(user)
 
-    res.status(201).json({ _id: user._id, name: user.name, email: user.email, role: user.role, token})
+    res.status(201).json({ 
+       user:{ _id: user._id, name: user.name, email: user.email, role: user.role}, 
+                         token
+        })
 
    })
 
@@ -40,7 +43,9 @@ export const register = asyncHandler(async (req, res) => {
        return res.status(400).json({message: "Please fill all the fields"})
     }
 
-    const user = await User.findOne({ email }).exec()
+    const normalizedEmail = email.trim().toLowerCase()
+
+    const user = await User.findOne({ email: normalizedEmail }).exec()
 
     if(!user) {
         return res.status(401).json({ message: "Invalid credentials" })
@@ -54,7 +59,10 @@ export const register = asyncHandler(async (req, res) => {
 
     const token = generateToken(user)
 
-    res.status(201).json({ _id: user._id, name: user.name, email: user.email, role: user.role, token})
+    res.status(201).json({ 
+         user:{ _id: user._id, name: user.name, email: user.email, role: user.role}, 
+                         token
+        })
 
 
    })

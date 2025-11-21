@@ -41,7 +41,7 @@ bookingSchema.index({ listing: 1, checkIn: 1, checkOut: 1})
 bookingSchema.statics.isBookingAvailable = async function (
     listingId,
     checkIn,
-    checkOut
+    checkOut,
 ) {
     const bookingsOverlap = await this.findOne({
         listing: listingId,

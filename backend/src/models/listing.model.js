@@ -9,6 +9,16 @@ const listingSchema = new mongoose.Schema({
     images: [{ url: { type: String },
     caption: String
 }],
+amenities: {
+    type: [String],
+    default: []
+},
+
+maxGuests: {
+    type: Number,
+    required: true,
+    min: 1
+},
     author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

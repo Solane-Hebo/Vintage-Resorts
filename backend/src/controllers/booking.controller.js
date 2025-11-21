@@ -107,7 +107,7 @@ export const getBookings = asyncHandler (async (req, res, next) => {
         q.user = req.user._id
     }
 
-    const bookings = await Booking.find(q).sort({ checkIn: 1}).populate('listing')
+    const bookings = await Booking.find(q).sort({ checkIn: 1}).populate('listing', 'title images')
     res.json(bookings)
 })
 
@@ -147,9 +147,15 @@ export const checkAvailability = asyncHandler(async (req, res) => {
 
 export const updateBookingStatus = asyncHandler(async (req, res) => {
     const { id } = req.params
+    const raw = req.body?.status
+    const status = typeof raw === "string" ? raw.toLowerCase() : raw
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: "Invalid booking id" });
+    }
+
+    if(!status || !['confirmed', 'cancelled'].includes(status)) {
+        return res.status(400).json({message: "Invalid status"})
     }
 
     const current = await Booking.findById(id)
@@ -164,10 +170,11 @@ export const updateBookingStatus = asyncHandler(async (req, res) => {
         return res.status(403).json({ message: "Access denied. Not your booking"});
     }
 
-    const updatedBooking = await Booking.findOneAndUpdate(
-        filter,
+    const updatedBooking = await Booking.findByIdAndUpdate(
+        id,
+        { status },
         { new: true }
-    ).populate('listing');
+    ).populate('listing', 'title images');
 
     if (!updatedBooking) {
         return res.status(404).json({ message: "Can't find booking" });

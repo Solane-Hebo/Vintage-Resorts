@@ -1,6 +1,6 @@
 import express from 'express'
-import { createBooking, deleteBooking, getBookingById, getBookings} from '../controllers/booking.controller.js'
-import ROLES from '../constant/role.js'
+import { createBooking, deleteBooking, getBookingById, getBookings, updateBookingStatus} from '../controllers/booking.controller.js'
+
 
 const router = express.Router()
 
@@ -12,10 +12,11 @@ router.route('/')
 
 router.route('/:id')
 .get(getBookingById)
+.patch(updateBookingStatus)
 .delete(deleteBooking)
 
 
-// router.delete('/:id/booking', cancelBooking)
+
 
 
 
