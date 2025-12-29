@@ -9,7 +9,6 @@ import Layout from "./Layout";
 import BookingThanksPage from "./Pages/Booking/BookingThanksPage";
 import BookingFlowPage from "./Pages/Booking/BookingFlowPage";
 import RegisterPage from "./Pages/auth/RegisterPage";
-import RequireAdmin from "./RequireAdmin";
 import ListingsAdminPage from "./Pages/admin/ListingAdminPage";
 import ListingForm from "./Pages/admin/ListingForm";
 
@@ -25,37 +24,24 @@ export const router = createBrowserRouter([
       { path: "listing/:id", element: <ListingDetailPage />},
 
       {
-        path: "admin",
-        children: [
-          {
-            index: true, element: <Navigate to="listings" replace />
-          },
-          {
-            path: "listings",
+        path: "account/listings",
             element: (
-              <RequireAdmin>
                 <ListingsAdminPage />
-              </RequireAdmin>
             )
           },
           {
-            path: "listings/new",
+            path: "account/listings/new",
             element: (
-              <RequireAdmin>
                 <ListingForm mode="create" />
-              </RequireAdmin>
             )
           },
           {
-            path: "listings/:id/edit",
+            path: "account/listings/:id/edit",
             element: (
-              <RequireAdmin>
                 <ListingForm mode="edit" />
-              </RequireAdmin>
             )
           },
-        ]
-      },
+      
 
       {
         path: "account/bookings",

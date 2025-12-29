@@ -42,6 +42,10 @@ export function getListingById(id: string) {
     return api.get<Listing>("/listing/" + id)
 }
 
+export function getMyListings() {
+    return api.get<Listing[]>("/listing/me")
+}
+
 export function searchListings(params: {
     place?: string
     from?: string
@@ -64,7 +68,7 @@ export type User = {
     _id: string
     email: string
     name: string
-    role: "admin" | "user"
+    // role: "admin" | "user"
 }
 
 export type LoginPayload = { email: string; password: string}
@@ -96,7 +100,7 @@ export function createBooking(payload: BookingCreatePayload) {
 
 export const getMyBookings = () => api.get("/bookings")
 export async function deleteBooking(id: string) {
-    return axios.delete(`/api/bookings/${id}`)
+    return api.delete(`/bookings/${id}`)
 }
 export const updateBookingStatus = (id: string, data:any) => api.patch(`/bookings/${id}`, data)
  

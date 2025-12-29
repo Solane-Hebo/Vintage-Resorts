@@ -53,12 +53,12 @@ return (
               >
                  My Booking
               </NavLink>
-                {user && user.role?.toString() === "admin" && (
+                {user && (
               <NavLink
-                 to="/admin/listings"
+                 to="/account/listings"
                  className={({ isActive }) => (isActive ? "underline" : undefined)}
                  >
-                  Admin
+                  My Listings
               </NavLink>
                 )}
 
@@ -148,13 +148,13 @@ return (
                 My Booking
               </NavLink>
 
-              {user && user.role?.toString() === "admin" && (
+              {user && (
                <NavLink
-                  to="/admin/listings"
+                  to="/account/listings"
                   className="block rounded-lg px-3 py-2 hover:bg-white/5"
                   onClick={() => setMobileOpen(false)}
                 >
-                  Admin
+                  My Listing
                </NavLink>
               )}
 

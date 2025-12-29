@@ -4,7 +4,7 @@ import asyncHandler from 'express-async-handler'
 
 
 export const createNewListing = asyncHandler (async(req, res, next) => {
-    const { 
+    let { 
         title, 
         description, 
         price, 
@@ -16,12 +16,18 @@ export const createNewListing = asyncHandler (async(req, res, next) => {
      } = req.body
     const author = req.user?._id
 
-    if (!title || !description || typeof price !=='number' || !pricingNote || !location || !images || !maxGuests) {
-        return res.status(400).json({ message: 'Please provide all required fields'})
+    price = Number(price)
+    maxGuests = Number (maxGuests)
+
+    if (!title || !description || Number.isNaN(price) || !location || !Array.isArray(images) || Number.isNaN(maxGuests)) {
+        return res.status(400).json({ message: 'Please provide all required fields',
+            debug: { title, description, price, pricingNote, location, imagesType: typeof images, maxGuests },
+        })
     }
-    const newListing = await Listing.create({ title, description, price, pricingNote: pricingNote || undefined, location, images, author, maxGuests, amenities })
+    const newListing = await Listing.create({ title, description, price, pricingNote: pricingNote?.trim() ? pricingNote: undefined, location, images, author, maxGuests, amenities: Array.isArray(amenities) ? amenities : [], })
     
     res.status(201).json(newListing)
+    console.log(req.body)
 })
 
 
@@ -55,6 +61,20 @@ export const updateListing = asyncHandler (async(req, res) => {
         return res.status(400).json({message: 'Invalid listing id'})
     }
 
+    const userId = req.user?._id
+    if(!userId) return res.status(401).json({message: 'Unauthorized'})
+
+    const listing = await Listing.findById(id).exec()
+    if(!listing) {
+        return res.status(404).json({message: `Can't find listing`})
+    }
+
+    if(listing.author.toString() !== userId.toString()){
+        return res.status(403).json({message: 'Forbidden: You are not the author of this listing'})
+    }
+   
+
+
     const { title, description, price, pricingNote, location, images, amenities, maxGuests } = req.body
 
     const toUpdate = {}
@@ -85,10 +105,19 @@ export const deleteListing = asyncHandler (async(req, res) => {
         return res.status(400).json({message: 'Invalid listing id'})
     }
 
-    const deletedListing = await Listing.findByIdAndDelete(id).exec()
+    const userId = req.user?._id
+    if(!userId) return res.status(401).json({message: 'Unauthorized'})
 
-     if(!deletedListing){
+    const listing = await Listing.findById(id).exec()
+
+     if(!listing){
         return res.status(404).json({message: `Can't find listing`})
 }
+
+    if(listing.author.toString() !== userId.toString()){
+        return res.status(403).json({message: 'Forbidden: You are not the author of this listing'})
+    }
+
+    await Listing.findByIdAndDelete(id).exec()
     res.status(200).json({message: 'Listing deleted successfully'})
 })

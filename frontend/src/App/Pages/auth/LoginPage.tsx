@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { login, type User } from "../../../lib/api";
 import type { AxiosError } from "axios";
@@ -7,6 +7,8 @@ import { useAuth } from "../../../lib/auth";
 export default function LoginPage() {
   const auth = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+
 
   const [form, setForm] = useState<{ email: string; password: string }>({
     email: "",
@@ -102,7 +104,10 @@ export default function LoginPage() {
       const storedToken = data.token
 
       auth.login(storedUser, storedToken)
-      navigate("/")
+      const params = new URLSearchParams(location.search)
+  const redirect = params.get("redirect")
+
+  navigate(redirect ? decodeURIComponent(redirect) : "/", { replace: true })
     } catch (err: unknown) {
       const ax = err as AxiosError<{ message: string }>
       if (ax.response?.data?.message) {

@@ -95,11 +95,11 @@ export default function BookingFlowPage(){
 
   const canNext1 = ["today", "30days"].includes(payWhen)
   const canNext2 = ["card", "paypal", "apple", "klarna"].includes(method)
-  const canNext3 = 
-        method !== "card" ||
-        (cardNumber.trim().length >= 12 &&
-         cardName.trim().length >= 2 &&
-         cardCvv.trim().length >= 3 )
+  // const canNext3 = 
+  //       method !== "card" ||
+  //       (cardNumber.trim().length >= 12 &&
+  //        cardName.trim().length >= 2 &&
+  //        cardCvv.trim().length >= 3 )
    
   const canSend =
         !!listing &&
@@ -342,13 +342,13 @@ export default function BookingFlowPage(){
                  >
                   Back
                  </button>
-                 <button
+                 {/* <button
                   disabled={!canNext3}
                   className="btn"
                  onClick={() => setStep(4)}
                  >
                   Next
-                </button>
+                </button> */}
                 </div>  
             </div>
          )}
@@ -361,7 +361,7 @@ export default function BookingFlowPage(){
            className="flex items-center justify-between p-4 cursor-pointer"
            onClick={() => setStep(4)}
           >
-            <div className="text-white font-medium">Send booking request</div>
+            <div className="text-white font-medium btn ">Send booking request</div>
          </header> 
          {step === 4 && (
             <div className="p-4 border-t border-white/10 space-y-3">
@@ -396,7 +396,11 @@ export default function BookingFlowPage(){
                  </button>
                  <button
                   disabled={!canSend}
-                  className="btn"
+                  className={`btn transition-all ${
+                    canSend 
+                    ? "bg-accent text-black hover:opacity-90 cursor-pointer"
+                    : "bg-white/10 text-white/400"
+                  }`}
                   onClick={handleSend}
                  >
                   Send booking request

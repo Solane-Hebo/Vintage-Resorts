@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Listing } from "../../../lib/types";
-import { deleteListing, getListings } from "../../../lib/api";
+import { deleteListing, getMyListings } from "../../../lib/api";
 
 export default function ListingsAdminPage() {
   const [items, setItems] = useState<Listing[]>([])
@@ -12,7 +12,7 @@ export default function ListingsAdminPage() {
     setLoading(true)
     setErr("")
     try {
-      const res = await getListings()
+      const res = await getMyListings()
       setItems(res.data)
     } catch (e) {
       setErr("Failed to load listings")
@@ -26,8 +26,8 @@ export default function ListingsAdminPage() {
   return (
     <div className="max-w-6xl mx-auto p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-white">Listings (Admin)</h1>
-        <Link to="/admin/listings/new" className="btn">+ New listing</Link>
+        <h1 className="text-2xl font-semibold text-white">My Listings</h1>
+        <Link to="/account/listings/new" className="btn">+ New listing</Link>
       </div>
 
       {loading && <p>Loading…</p>}
@@ -50,7 +50,7 @@ export default function ListingsAdminPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <Link to={`/admin/listings/${l._id}/edit`} className="px-3 py-2 rounded-2xl bg-white/15 hover:bg-white/30">
+              <Link to={`/account/listings/${l._id}/edit`} className="px-3 py-2 rounded-2xl bg-white/15 hover:bg-white/30">
                 Edit
               </Link>
               <button

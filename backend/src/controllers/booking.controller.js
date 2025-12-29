@@ -51,7 +51,7 @@ export const createBooking = asyncHandler(async (req, res) => {
     const isAvailable = await Booking.isBookingAvailable(listingId, start, end)
 
     if(!isAvailable) {
-        return res.status(400).json({ message: 'Date is not available'})
+        return res.status(400).json({ message: 'The dates you selected are not available. Please choose different dates.'})
     }
 
     const listing = await Listing.findById(listingId).lean()

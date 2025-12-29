@@ -76,11 +76,12 @@ export  function AuthProvider({ children }: { children: React.ReactNode}) {
 
         
     export function RequireAuth({ children }: { children: React.ReactNode}){
-        const { token }= useAuth()
+        const {user, token }= useAuth()
         const location = useLocation()
 
-        if(!token) {
+        if(!token || !user) {
             const redirect = encodeURIComponent(location.pathname + location.search)
+            
         return  <Navigate to={`/login?redirect=${redirect}`} replace />
     }
         return <>{children}</>

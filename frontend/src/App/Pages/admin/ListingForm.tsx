@@ -64,7 +64,7 @@ export default function ListingForm({ mode }: Props) {
       } else if (mode === "edit" && id) {
         await updateListing(id, payload)
       }
-      navigate("/admin/listings")
+      navigate("/account/listings")
     } catch (e) {
       setError("Save failed")
     }
