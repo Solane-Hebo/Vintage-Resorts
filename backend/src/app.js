@@ -21,6 +21,13 @@ app.use(
     })
 ) 
 
+app.get("/", (req, res) => {
+    res.status(200).send("Vintage-Resorts API is running")
+})
+app.get("/health", (req, res) => {
+    res.status(200).json({ ok: true})
+})
+
 app.use('/api/listing', listingRoutes)
 app.use('/api/bookings', authenticateToken, authorizeRoles( ROLES.ADMIN, ROLES.USER), bookingRoutes)
 app.use('/api/user', userRoutes)

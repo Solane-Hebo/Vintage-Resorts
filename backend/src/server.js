@@ -1,13 +1,6 @@
 import app from './app.js'
 import mongoose from 'mongoose'
 
-app.get("/", (req, res) => {
-    res.status(200).send("Vintage-Resorts API is running")
-})
-app.get("/health", (req, res) => {
-    res.status(200).json({ ok: true})
-})
-
 const PORT = process.env.PORT || 8888
 
 const MONGO_URI = process.env.MONGO_URI
