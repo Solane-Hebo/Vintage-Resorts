@@ -68,7 +68,7 @@ export type User = {
     _id: string
     email: string
     name: string
-    role: "admin" | "user"
+    role?: "admin" | "user"
 }
 
 export type LoginPayload = { email: string; password: string}
