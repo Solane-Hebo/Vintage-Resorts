@@ -5,8 +5,7 @@ export default function RequireAdmin({ children }: { children: React.ReactNode }
   const { user } = useAuth()
   const loc = useLocation()
 
-  const role = String(user?.role || "").toLowerCase()
-  if (!user || role !== "admin") {
+  if (!user) {
     return <Navigate to={`/login?redirect=${encodeURIComponent(loc.pathname + loc.search)}`} replace />
   }
   return <>{children}</>
