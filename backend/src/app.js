@@ -13,15 +13,23 @@ app.use(express.json())
 
 app.use(
     cors({
-        origin: ['http://localhost:5173', 'http://localhost:5174'],
+        origin: ['http://localhost:5173', 'http://localhost:5174',
+            process.env.FRONTEND_URL,
+        ].filter(Boolean),
         credentials: true
-
     })
 ) 
 
 app.use('/api/listing', listingRoutes)
 app.use('/api/bookings', authenticateToken, authorizeRoles( ROLES.ADMIN, ROLES.USER), bookingRoutes)
 app.use('/api/user', userRoutes)
+
+app.get("/", (req, res) => {
+    res.status(200).send("Vintage-Resorts API is running")
+})
+app.get("/health", (req, res) => {
+    res.status(200).json({ ok: true})
+})
 
 app.use(notFound) // notFound
 app.use(errorHandler) // errorHandler
