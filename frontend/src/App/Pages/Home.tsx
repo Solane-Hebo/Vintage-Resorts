@@ -12,13 +12,24 @@ function ListingCard({ item }: { item: Listing }) {
   return (
     <Link
       to={`/listing/${item._id}`}
-      className="group rounded-xl overflow-hidden bg-surface border border-white/10 hover:border-white/20 transition"
+      className="
+             group 
+             rounded-2xl 
+             overflow-hidden 
+           bg-surface 
+             border border-white/10 
+           hover:border-accent/40 
+             transition-all 
+             duration-300
+             hover:-translate-y-1
+             hover:shadow-xl
+     "
     >
       <div className="relative ">
         <img
           src={item.images?.[0]?.url}
           alt={item.title}
-          className="w-full aspect-[4/3] object-cover"
+          className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
         />
         <div className="absolute top-2 left-2 rounded-full bg-accent text-[13px] text-[#0f0f10]  px-2 py-1 font-semibold">
@@ -46,7 +57,7 @@ function ListingCard({ item }: { item: Listing }) {
         </div>
         <div className="text-xs text-white/60 mt-1">{item.location}</div>
         <div className="text-[15px] text-white mt-1">
-          <span className="-semibold">{item.price.toLocaleString()} SEK</span>{" "}
+          <span className="font-semibold">{item.price.toLocaleString()} SEK</span>{" "}
           <span className="text-white/70">/ night</span>
         </div>
         
@@ -84,13 +95,40 @@ export default function Home() {
     return Array.from(m.entries())
   }, [data])
 
-  if (loading) return <div className="p-6">Loading…</div>
+  if (loading) {
+  return (
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+      <div className="space-y-8 animate-pulse">
+
+        <div className="h-10 w-64 bg-white/10 rounded-xl" />
+
+        <div className="grid [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))] gap-4">
+          {[1,2,3,4,5,6,7,8].map((i) => (
+            <div
+              key={i}
+              className="bg-surface border border-white/10 rounded-xl overflow-hidden"
+            >
+              <div className="aspect-[4/3] bg-white/10" />
+
+              <div className="p-3 space-y-3">
+                <div className="h-5 bg-white/10 rounded-lg w-3/4" />
+                <div className="h-3 bg-white/10 rounded-lg w-1/2" />
+                <div className="h-4 bg-white/10 rounded-lg w-1/3" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  )
+}
   if (error) return <div className="p-6 text-red-500">{error}</div>
   if (!data.length) return <div className="p-6">No listings yet</div>
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-8">
-      <h1 className="text-2xl md:text-4xl -heading tracking-tight ">
+      <h1 className="text-2xl md:text-4xl font-semibold tracking-tight text-white">
         Stay in an Era You Love
       </h1>
 

@@ -39,7 +39,7 @@ useEffect(() =>{
     return (
         <div className="p-4 max-w-4xl mx-auto space-y-6">
          <section className="bg-surface  rounded-2xl border border-white/10 p-4 space-y-2">
-            <h2 className="text-x2 font-semibold tracking-tight text-accent">
+            <h2 className="text-x1 font-semibold tracking-tight text-accent">
                 {place ? `Listing in ${place}` : "Listing"}
             </h2>
             <p className="text-sm text-white/70">
@@ -54,8 +54,34 @@ useEffect(() =>{
             </p>
          </section>
 
-           {loading && <p className="text-white/80">Loading..</p>}
-           {error && <p className="text-white/80">{error}</p>}
+           {loading && (
+  <div className="space-y-4 animate-pulse">
+    {[1, 2, 3].map((item) => (
+      <div
+        key={item}
+        className="bg-surface rounded-2xl overflow-hidden border border-white/10 shadow-card"
+      >
+        <div className="w-full aspect-[16/9] bg-white/10" />
+
+        <div className="p-4 space-y-3">
+          <div className="h-5 w-3/4 bg-white/10 rounded-lg" />
+          <div className="h-4 w-1/2 bg-white/10 rounded-lg" />
+          <div className="h-4 w-1/3 bg-white/10 rounded-lg" />
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+           {error && (
+  <div className="rounded-2xl border border-red-400/20 bg-red-400/10 p-5 text-center">
+    <p className="text-red-300 font-medium">
+      Something went wrong
+    </p>
+    <p className="text-white/60 text-sm mt-1">
+      {error}
+    </p>
+  </div>
+)}
 
            {!loading && !error && results.length === 0 && (
             <p className="text-white/80">No matches right now</p>   

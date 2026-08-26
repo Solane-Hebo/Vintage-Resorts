@@ -74,7 +74,34 @@ export default function ListingForm({ mode }: Props) {
     setImages(prev => prev.map((img, i) => (i === idx ? { ...img, ...patch } : img)))
   }
 
-  if (loading) return <div className="p-6">Loading…</div>
+  if (loading) {
+  return (
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+      <div className="space-y-8 animate-pulse">
+
+        <div className="h-10 w-64 bg-white/10 rounded-xl" />
+
+        <div className="grid [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))] gap-4">
+          {[1,2,3,4,5,6,7,8].map((i) => (
+            <div
+              key={i}
+              className="bg-surface border border-white/10 rounded-xl overflow-hidden"
+            >
+              <div className="aspect-[4/3] bg-white/10" />
+
+              <div className="p-3 space-y-3">
+                <div className="h-5 bg-white/10 rounded-lg w-3/4" />
+                <div className="h-3 bg-white/10 rounded-lg w-1/2" />
+                <div className="h-4 bg-white/10 rounded-lg w-1/3" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  )
+}
 
   return (
     <form onSubmit={onSubmit} 
